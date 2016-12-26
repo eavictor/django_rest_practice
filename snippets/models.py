@@ -19,3 +19,6 @@ class Snippet(models.Model):
 
     class Meta:
         ordering = ('created',)
+
+    def __repr__(self):
+        return "created:%s, code:%s" % (self.created, self.code)
