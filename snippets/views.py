@@ -1,66 +1,114 @@
-from django.http import Http404
-from rest_framework import status
-from rest_framework.views import APIView
+# from django.http import Http404
+from rest_framework import mixins
+from rest_framework import generics
+# from rest_framework import status
+# from rest_framework.views import APIView
 # from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.parsers import JSONParser
+# from rest_framework.response import Response
+# from rest_framework.parsers import JSONParser
 from snippets.models import Snippet
 from snippets.serializers import SnippetSerializer
 
 
 # Create your views here.
-class SnippetList(APIView):
-    """
-    List all code snippets, or create a new snippet
-    """
-    @classmethod
-    def get(cls, request, format=None):
-        snippets = Snippet.objects.all()
-        serializer = SnippetSerializer(snippets, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    @classmethod
-    def post(cls, request, format=None):
-        serializer = SnippetSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+"""Class Views: Mixin"""
 
 
-class SnippetDetail(APIView):
-    """
-    Retrieve, update or delete a code snippet.
-    """
-    @classmethod
-    def get_object(cls, pk):
-        try:
-            return Snippet.objects.get(pk=pk)
-        except Snippet.DoesNotExist:
-            return Http404
+class SnippetList(mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                  generics.GenericAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
 
     @classmethod
-    def get(cls, request, pk, format=None):
-        serializer = SnippetSerializer(cls.get_object(pk=pk))
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def get(cls, request, *args, **kwargs):
+        return cls.list(request, *args, **kwargs)
 
     @classmethod
-    def put(cls, request, pk, format=None):
-        data = JSONParser().parse(request)
-        snippet = cls.get_object(pk=pk)
-        serializer = SnippetSerializer(snippet, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(cls, request, *args, **kwargs):
+        return cls.create(request, *args, **kwargs)
+
+
+class SnippetDetail(mixins.RetrieveModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin,
+                    generics.GenericAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
 
     @classmethod
-    def delete(cls, request, pk, format=None):
-        snippet = cls.get_object(pk=pk)
-        snippet.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def get(cls, request, *args, **kwargs):
+        return cls.retrieve(request, *args, **kwargs)
+
+    @classmethod
+    def put(cls, request, *args, **kwargs):
+        return cls.update(request, *args, **kwargs)
+
+    @classmethod
+    def delete(cls, request, *args, **kwargs):
+        return cls.destroy(request, *args, **kwargs)
+
+
+"""Method Views"""
+
+
+# class SnippetList(APIView):
+#     """
+#     List all code snippets, or create a new snippet
+#     """
+#     @classmethod
+#     def get(cls, request, format=None):
+#         snippets = Snippet.objects.all()
+#         serializer = SnippetSerializer(snippets, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+#
+#     @classmethod
+#     def post(cls, request, format=None):
+#         serializer = SnippetSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         else:
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#
+#
+# class SnippetDetail(APIView):
+#     """
+#     Retrieve, update or delete a code snippet.
+#     """
+#     @classmethod
+#     def get_object(cls, pk):
+#         try:
+#             return Snippet.objects.get(pk=pk)
+#         except Snippet.DoesNotExist:
+#             return None
+#
+#     @classmethod
+#     def get(cls, request, pk, format=None):
+#         print(pk)
+#         snippet = cls.get_object(pk=pk)
+#         serializer = SnippetSerializer(snippet)
+#         if snippet is not None:
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         else:
+#             return Response(status=status.HTTP_404_NOT_FOUND)
+#
+#     @classmethod
+#     def put(cls, request, pk, format=None):
+#         data = JSONParser().parse(request)
+#         snippet = cls.get_object(pk=pk)
+#         serializer = SnippetSerializer(snippet, data=data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+#         else:
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#
+#     @classmethod
+#     def delete(cls, request, pk, format=None):
+#         snippet = cls.get_object(pk=pk)
+#         snippet.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # @api_view(["GET", "POST"])
