@@ -1,5 +1,5 @@
 # from django.http import Http404
-from rest_framework import mixins
+# from rest_framework import mixins
 from rest_framework import generics
 # from rest_framework import status
 # from rest_framework.views import APIView
@@ -11,42 +11,55 @@ from snippets.serializers import SnippetSerializer
 
 
 # Create your views here.
+"""Class views: Generic"""
+
+
+class SnippetList(generics.ListCreateAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+
+class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+
 """Class Views: Mixin"""
 
 
-class SnippetList(mixins.ListModelMixin,
-                  mixins.CreateModelMixin,
-                  generics.GenericAPIView):
-    queryset = Snippet.objects.all()
-    serializer_class = SnippetSerializer
-
-    @classmethod
-    def get(cls, request, *args, **kwargs):
-        return cls.list(request, *args, **kwargs)
-
-    @classmethod
-    def post(cls, request, *args, **kwargs):
-        return cls.create(request, *args, **kwargs)
-
-
-class SnippetDetail(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
-    queryset = Snippet.objects.all()
-    serializer_class = SnippetSerializer
-
-    @classmethod
-    def get(cls, request, *args, **kwargs):
-        return cls.retrieve(request, *args, **kwargs)
-
-    @classmethod
-    def put(cls, request, *args, **kwargs):
-        return cls.update(request, *args, **kwargs)
-
-    @classmethod
-    def delete(cls, request, *args, **kwargs):
-        return cls.destroy(request, *args, **kwargs)
+# class SnippetList(mixins.ListModelMixin,
+#                   mixins.CreateModelMixin,
+#                   generics.GenericAPIView):
+#     queryset = Snippet.objects.all()
+#     serializer_class = SnippetSerializer
+#
+#     @classmethod
+#     def get(cls, request, *args, **kwargs):
+#         return cls.list(request, *args, **kwargs)
+#
+#     @classmethod
+#     def post(cls, request, *args, **kwargs):
+#         return cls.create(request, *args, **kwargs)
+#
+#
+# class SnippetDetail(mixins.RetrieveModelMixin,
+#                     mixins.UpdateModelMixin,
+#                     mixins.DestroyModelMixin,
+#                     generics.GenericAPIView):
+#     queryset = Snippet.objects.all()
+#     serializer_class = SnippetSerializer
+#
+#     @classmethod
+#     def get(cls, request, *args, **kwargs):
+#         return cls.retrieve(request, *args, **kwargs)
+#
+#     @classmethod
+#     def put(cls, request, *args, **kwargs):
+#         return cls.update(request, *args, **kwargs)
+#
+#     @classmethod
+#     def delete(cls, request, *args, **kwargs):
+#         return cls.destroy(request, *args, **kwargs)
 
 
 """Method Views"""
