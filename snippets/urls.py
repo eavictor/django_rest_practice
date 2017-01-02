@@ -6,6 +6,8 @@ from snippets import views
 urlpatterns = [
     # url(r'^snippets/$', views.snippet_list, name="snippet_list"),
     # url(r'^snippets/(?P<pk>[0-9]+)/$', views.snippet_detail, name="snippet_detail"),
+    url(r'^users/$', views.UserList.as_view(), name="user_list"),
+    url(r'users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view(), name="user_detail"),
     url(r'^snippets/$', views.SnippetList.as_view(), name="snippet_list"),
     url(r'^snippets/(?P<pk>[0-9]+)/$', views.SnippetDetail.as_view(), name="snippet_detail"),
 ]
