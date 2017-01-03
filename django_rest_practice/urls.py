@@ -18,8 +18,10 @@ from django.contrib import admin
 from django.conf.urls import include
 from django.views.generic.base import RedirectView
 
+
 urlpatterns = [
     url(r'^favicon.ico$', RedirectView.as_view(url='/static/favicon.ico', permanent=True)),
     url(r'^admin/', admin.site.urls),
-    url(r'^api/', include('snippets.urls'))
+    url(r'^api/', include('snippets.urls')),
+    url(r'api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
