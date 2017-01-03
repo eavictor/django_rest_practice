@@ -2,3 +2,5 @@ Django
 djangorestframework
 pygments
 httpie
+coreapi
+coreapi-cli
